@@ -1,0 +1,14 @@
+spring:
+  datasource:
+    platform: h2
+    url: jdbc:h2:mem:default
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: sa
+    schema:
+      - classpath:db/product-schema.sql
+    data:
+      - classpath:db/product-data-schema.sql
+logging:
+  level:
+    spring.boot.h2.mapper: debug
