@@ -1,0 +1,91 @@
+package spring.boot.redis.config;
+
+import com.sun.org.apache.regexp.internal.RE;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.data.redis.core.RedisCallback;
+import org.springframework.data.redis.core.RedisOperations;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SessionCallback;
+import org.springframework.data.redis.serializer.RedisSerializer;
+import org.springframework.lang.Nullable;
+import redis.clients.jedis.JedisPoolConfig;
+
+/**
+ * Spring 集成Redis
+ */
+@Configuration
+public class BeanConfiguration {
+
+    @Bean
+    public RedisConnectionFactory redisConnectionFactory() {
+        JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+        // 最大空闲数
+        jedisPoolConfig.setMaxIdle(30);
+        // 最大连接数
+        jedisPoolConfig.setMaxTotal(50);
+        // 最大等待毫秒数
+        jedisPoolConfig.setMaxWaitMillis(2000);
+        // 创建Jedis连接工厂
+        JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory(jedisPoolConfig);
+        // 获取单机的Redis配置
+        RedisStandaloneConfiguration standaloneConfiguration = jedisConnectionFactory.getStandaloneConfiguration();
+        assert standaloneConfiguration != null;
+        standaloneConfiguration.setHostName("127.0.0.1");
+        standaloneConfiguration.setPort(6379);
+        return jedisConnectionFactory;
+    }
+
+    @Bean
+    public RedisTemplate<Object, Object> redisTemplate(
+            RedisConnectionFactory redisConnectionFactory) {
+        RedisTemplate<Object, Object> objectObjectRedisTemplate = new RedisTemplate<>();
+        // 获取默认的字符串序列化器
+        RedisSerializer<String> stringSerializer = objectObjectRedisTemplate.getStringSerializer();
+        // 更改默认的KEY序列化器-->字符串序列化器
+        objectObjectRedisTemplate.setKeySerializer(stringSerializer);
+        // 更改默认的HashKey序列化器-->字符串序列化器
+        objectObjectRedisTemplate.setHashKeySerializer(stringSerializer);
+        // 更改默认的HashValue序列化器-->字符串序列化器
+        objectObjectRedisTemplate.setHashValueSerializer(stringSerializer);
+        objectObjectRedisTemplate.setConnectionFactory(redisConnectionFactory);
+        return objectObjectRedisTemplate;
+    }
+
+    // 使用RedisCallback让RedisTemplate进行回调(使得RedisTemplate使用同一条Redis连接进行回调)
+    // 偏底层
+    // 不推荐使用RedisCallback
+    public void useRedisCallback(RedisTemplate redisTemplate) {
+        redisTemplate.execute(
+                new RedisCallback() {
+                    @Nullable
+                    @Override
+                    public Object doInRedis(RedisConnection connection) throws DataAccessException {
+                        connection.set("key1".getBytes(), "value1".getBytes());
+                        connection.hSet("hash".getBytes(), "field".getBytes(), "value".getBytes());
+                        return null;
+                    }
+                }
+        );
+    }
+
+    // 使用SessionCallback让RedisTemplate进行回调(使得RedisTemplate使用同一条Redis连接进行回调)
+    // 接口友好
+    // 推荐使用
+    public void useSessionCallback(RedisTemplate redisTemplate) {
+        redisTemplate.execute(new SessionCallback() {
+            @Nullable
+            @Override
+            public Object execute(RedisOperations operations) throws DataAccessException {
+                operations.opsForValue().set("key1", "value1");
+                operations.opsForHash().put("hash", "field", "value");
+                return null;
+            }
+        });
+    }
+}
