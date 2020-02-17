@@ -1,6 +1,7 @@
 package spring.boot.tx.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -15,6 +16,9 @@ import java.util.List;
 public class UserService implements IUserService {
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private ApplicationContext applicationContext;
 
     @Override
     public User getUser(Long id) {
@@ -39,6 +43,7 @@ public class UserService implements IUserService {
         //原因：AOP不给给代理对象代理两次
         //解决办法(1):可以创建另外一个类来调用
         //解决办法(2):通过从IOC容器中获取本类对象,在进行调用
+        //IUserService userService = applicationContext.getBean(IUserService.class);
         return 0;
     }
 

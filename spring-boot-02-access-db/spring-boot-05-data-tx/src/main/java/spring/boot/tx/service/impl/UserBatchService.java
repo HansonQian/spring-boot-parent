@@ -23,7 +23,7 @@ public class UserBatchService implements IUserBatchService {
     public int batchSave(List<User> userList) {
         int count = 0;
         for (User user : userList) {
-            //调用资方法,将使用@Transactional定义的事务传播行为
+            //调用子方法,将使用@Transactional定义的事务传播行为
             count += userService.addUser(user);
         }
         return count;

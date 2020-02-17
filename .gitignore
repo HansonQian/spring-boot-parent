@@ -27,3 +27,11 @@ HELP.md
 
 ### VS Code ###
 .vscode/
+spring-boot-01-example/src/main/resources/
+spring-boot-01-example/src/test/
+spring-boot-02-access-db/spring-boot-03-data-mybatis/target/
+spring-boot-02-access-db/spring-boot-04-data-mybatis-h2/src/test/
+spring-boot-03-nosql/spring-boot-01-nosql-redis/src/test/
+spring-boot-03-nosql/spring-boot-01-nosql-redis/target/classes/application.properties
+spring-boot-03-nosql/spring-boot-01-nosql-redis/target/classes/spring/boot/redis/web/
+spring-boot-03-nosql/spring-boot-01-nosql-redis/target/generated-sources/
