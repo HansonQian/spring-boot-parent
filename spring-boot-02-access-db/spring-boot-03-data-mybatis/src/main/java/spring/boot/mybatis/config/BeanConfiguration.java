@@ -50,7 +50,7 @@ public class BeanConfiguration {
     /**
      * 自定义枚举类型处理器
      */
-    class SexEnumTypeHandler extends BaseTypeHandler<SexEnum> {
+    public class SexEnumTypeHandler extends BaseTypeHandler<SexEnum> {
 
         //设置非空性别参数
         @Override
@@ -97,7 +97,7 @@ public class BeanConfiguration {
                     method = "prepare",
                     args = {Connection.class, Integer.class})
     })
-    class DemoPlugin implements Interceptor {
+    public class DemoPlugin implements Interceptor {
 
         private Properties properties;
 
