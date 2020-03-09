@@ -1,7 +1,6 @@
 package spring.boot.redis.web;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Range;
 import org.springframework.data.redis.core.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;

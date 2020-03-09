@@ -21,7 +21,7 @@ public class BeanConfiguration {
      * @return
      */
     @Bean
-    public RedisTemplate stringRedisTemplate() {
+    public RedisTemplate<Object,Object> stringRedisTemplate() {
         RedisTemplate<Object, Object> objectObjectRedisTemplate = new RedisTemplate<>();
         RedisSerializer<String> stringSerializer = objectObjectRedisTemplate.getStringSerializer();
         //objectObjectRedisTemplate.setDefaultSerializer();
